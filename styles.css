@@ -843,3 +843,10 @@ section { position: relative; }
 /* Run 06: Quellenzeile unter "What we did", Kennzahl über Foto-Slides lesbar */
 .cp-body p.cp-note { margin-top: 18px; font-size: 11px; line-height: 1.6; letter-spacing: .04em; color: rgba(242,242,239,.56); }
 .case__media--slides .big { z-index: 2; text-shadow: 0 2px 28px rgba(0,0,0,.55); }
+
+/* Run 09: große Kennzahl über dem Chip (Break-Out-Kachel) */
+.case__media .big--chip { bottom: 54px; }
+
+/* Run 11: UI-Screenshot (YouTube Studio) statt Foto – ganz zeigen, nicht beschneiden */
+.case__media--shot, .cp-media--shot { background: #0F0F0F; }
+.case__media--shot > img { object-fit: cover; }   /* Bild ist bereits mit #0F0F0F auf 4:5 gepolstert */
