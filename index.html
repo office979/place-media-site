@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -6,6 +6,11 @@
   <title>PLACEMedia — We don't do boring.</title>
   <meta name="description" content="PLACEMedia is an international media production and content systems agency based in Vienna, Dubai and New York. Multi-cam productions, B2B content systems, post-production and consulting. Visuals with intent.">
   <link rel="canonical" href="https://place-media.co/">
+  <link rel="alternate" hreflang="en" href="https://place-media.co/" data-i18n>
+  <link rel="alternate" hreflang="de" href="https://place-media.co/de/" data-i18n>
+  <link rel="alternate" hreflang="x-default" href="https://place-media.co/" data-i18n>
+  <meta property="og:locale" content="en_US" data-i18n>
+  <meta property="og:locale:alternate" content="de_AT" data-i18n>
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://place-media.co/">
   <meta property="og:site_name" content="PLACEMedia">
@@ -17,7 +22,10 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://place-media.co/assets/og.jpg">
   <meta name="theme-color" content="#050505">
-  <link rel="icon" href="assets/favicon.ico">
+  <link rel="icon" href="assets/favicon.ico" sizes="any">
+  <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
   <link rel="preload" href="assets/fonts/inter-tight-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
@@ -25,6 +33,7 @@
   {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": "https://place-media.co/#org",
     "name": "PLACEMedia",
     "url": "https://place-media.co/",
     "logo": "https://place-media.co/assets/pm-logo.png",
@@ -45,12 +54,26 @@
     "sameAs": ["https://www.instagram.com/place_media/", "https://www.linkedin.com/in/ferdinand-platz-89562a264/", "https://www.youtube.com/@FerdiPlatz"]
   }
   </script>
+  <script type="application/ld+json" data-ld="website">
+{
+ "@context": "https://schema.org",
+ "@type": "WebSite",
+ "@id": "https://place-media.co/#website",
+ "name": "PLACEMedia",
+ "url": "https://place-media.co/",
+ "inLanguage": "en",
+ "publisher": {
+  "@id": "https://place-media.co/#org"
+ }
+}
+  </script>
 </head>
 <body>
+  <a class="skip-link" href="#top">Skip to content</a>
 
   <!-- PRELOADER -->
   <div class="loader" aria-hidden="true">
-    <img src="assets/pm-logo.png" alt="" class="loader__logo">
+    <img src="assets/pm-logo.webp" alt="" class="loader__logo" width="484" height="250">
     <div class="loader__count mono"><span data-count>000</span></div>
     <div class="loader__line"><span></span></div>
   </div>
@@ -60,7 +83,7 @@
 
   <!-- NAV -->
   <header class="nav">
-    <a href="#top" class="nav__logo" aria-label="PLACEMedia home"><img src="assets/pm-logo.png" alt="PLACEMedia"></a>
+    <a href="#top" class="nav__logo" aria-label="PLACEMedia home"><img src="assets/pm-logo.webp" alt="PLACEMedia" width="484" height="250"></a>
     <nav class="nav__links" aria-label="Main">
       <a href="#work">Work</a>
       <a href="#services">Services</a>
@@ -70,21 +93,21 @@
       <a href="#studio">Studio</a>
     </nav>
     <div class="nav__meta mono"><span class="dot"></span><span data-clock-vie>VIE --:--</span><span class="sep">/</span><span data-clock-dxb>DXB --:--</span><span class="sep">/</span><span data-clock-us>NYC --:--</span></div>
+    <a class="lang-switch mono" href="de/index.html" hreflang="de" lang="de" aria-label="DE – Deutsch" data-i18n>DE</a>
     <a href="#contact" class="btn btn--light nav__cta" data-cursor="Let's talk">Start a project</a>
-    <button class="nav__burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+    <button type="button" class="nav__burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span></button>
   </header>
 
-  <div class="menu" aria-hidden="true">
-    <a href="#work">Work</a><a href="#services">Services</a><a href="#bts">Behind the scenes</a><a href="#systems">Systems</a><a href="#approach">Approach</a><a href="#studio">Studio</a><a href="#contact">Contact</a>
-  </div>
+  <div class="menu" id="mobile-menu" aria-hidden="true" inert>
+    <a href="#work">Work</a><a href="#services">Services</a><a href="#bts">Behind the scenes</a><a href="#systems">Systems</a><a href="#approach">Approach</a><a href="#studio">Studio</a><a href="#contact">Contact</a><a class="lang-switch lang-switch--menu mono" href="de/index.html" hreflang="de" lang="de" aria-label="DE – Deutsch" data-i18n>DE</a></div>
 
-  <main id="top">
+  <main id="top" tabindex="-1">
 
     <!-- HERO -->
     <section class="hero">
       <canvas class="hero__fx" aria-hidden="true"></canvas>
-      <!-- Showreel for the LED wall: footage at assets/showreel.mp4 is re-coloured to the brand palette on the wall. -->
-      <video class="hero__video" src="assets/showreel.mp4" muted loop playsinline autoplay preload="auto" aria-hidden="true"></video>
+      <!-- Showreel for the LED wall: assets/showreel-led.mp4 (480 px, only sampled into the LED grid; master: _archive/assets-unused/assets/showreel.mp4, not deployed) is re-coloured to the brand palette. Loaded by hero.js after first paint. -->
+      <video class="hero__video" data-src="assets/showreel-led.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
       <div class="hero__frame mono" aria-hidden="true">
         <span class="tl">PLACEMEDIA®<br>Media production &amp; content systems</span>
         <span class="tc">+</span>
@@ -93,7 +116,7 @@
         <span class="tr">Est. Vienna<br>Working worldwide</span>
       </div>
 
-      <h1 class="hero__title" aria-label="We don't do boring.">
+      <h1 class="hero__title">
         <span class="line"><span class="word" data-split>We&nbsp;don't</span></span>
         <span class="line"><span class="word" data-split>do&nbsp;boring.</span></span>
       </h1>
@@ -216,7 +239,7 @@
       <div class="work__rail" data-rail>
         <article class="case" data-cursor="View case">
           <div class="case__media">
-            <video src="assets/work/almedia/almedia-berlin.mp4" poster="assets/work/almedia/almedia-poster.jpg" muted loop playsinline preload="none" aria-label="Almedia — Berlin brand film"></video>
+            <video data-src="assets/work/almedia/almedia-berlin-tile.mp4" data-src-sm="assets/work/almedia/almedia-berlin-sm.mp4" data-poster="assets/work/almedia/almedia-tile-poster.jpg" muted loop playsinline preload="none" aria-label="Almedia — Berlin brand film"></video>
             <span class="case__chip mono">BERLIN, DE</span>
           </div>
           <div class="case__meta mono"><span>01</span><span>Client · Almedia</span></div>
@@ -226,10 +249,10 @@
 
        <article class="case" data-cursor="View case">
           <div class="case__media case__media--slides case__media--slides4">
-            <img src="assets/work/trading/leaderboard.jpg" alt="Live Trading Showdown — LED wall with live leaderboard and heart rates" style="object-position:22% 50%">
-            <img src="assets/work/trading/multiview.jpg" alt="Multi-cam monitor showing eight camera feeds" style="object-position:55% 50%">
-            <img src="assets/work/trading/sound.jpg" alt="Sound engineer preparing wireless audio on set">
-            <img src="assets/work/trading/crew.jpg" alt="Crew briefing in silhouette in front of the LED wall" style="object-position:62% 50%">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/trading/r/leaderboard-1400.jpg" data-srcset="assets/work/trading/r/leaderboard-800.webp 800w, assets/work/trading/r/leaderboard-1400.webp 1400w, assets/work/trading/r/leaderboard-2000.webp 2000w, assets/work/trading/r/leaderboard-2800.webp 2800w" sizes="(max-width: 860px) 137vw, 57vw" alt="Live Trading Showdown — LED wall with live leaderboard and heart rates" style="object-position:22% 50%">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/trading/r/multiview-1400.jpg" data-srcset="assets/work/trading/r/multiview-800.webp 800w, assets/work/trading/r/multiview-1400.webp 1400w, assets/work/trading/r/multiview-2000.webp 2000w, assets/work/trading/r/multiview-2048.webp 2048w" sizes="(max-width: 860px) 137vw, 57vw" alt="Multi-cam monitor showing eight camera feeds" style="object-position:55% 50%">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/trading/r/sound-1400.jpg" data-srcset="assets/work/trading/r/sound-800.webp 800w, assets/work/trading/r/sound-1400.webp 1400w, assets/work/trading/r/sound-2000.webp 2000w, assets/work/trading/r/sound-2800.webp 2800w" sizes="(max-width: 860px) 82vw, 34vw" alt="Sound engineer preparing wireless audio on set">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/trading/r/crew-1400.jpg" data-srcset="assets/work/trading/r/crew-800.webp 800w, assets/work/trading/r/crew-1400.webp 1400w, assets/work/trading/r/crew-2000.webp 2000w, assets/work/trading/r/crew-2800.webp 2800w" sizes="(max-width: 860px) 137vw, 57vw" alt="Crew briefing in silhouette in front of the LED wall" style="object-position:62% 50%">
             <span class="case__chip mono">LIVE · 12 CAMS</span>
           </div>
           <div class="case__meta mono"><span>02</span><span>Live production</span></div>
@@ -237,21 +260,22 @@
           <p class="case__desc">6 traders live, 2 commentators, 12 cameras, 2 × 15 m LED walls and a real-time heart-rate dashboard. Concept to broadcast in 120 hours.</p>
         </article>
 
-        <article class="case">
-          <div class="case__media case__media--circle">
-            <div class="ring">
-              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-            </div>
-            <span class="rec mono">● REC 10/10</span>
+        <article class="case" data-cursor="View case">
+          <div class="case__media">
+            <video data-src="assets/work/circle/circle-loop-tile.mp4" data-src-sm="assets/work/circle/circle-loop-sm.mp4" data-poster="assets/work/circle/circle-tile-poster.jpg" muted loop playsinline preload="none" aria-label="The Circle — discussion in the hall, wide shot"></video>
+            <span class="case__chip mono">10 CAMERAS · HALL</span>
           </div>
-          <div class="case__meta mono"><span>03</span><span>Format development</span></div>
-          <h3 class="case__title">The Circle</h3>
-          <p class="case__desc">An industrial hall, a circle of people, 10 cameras rolling at once. A discussion format the DACH market hadn't seen before.</p>
+          <div class="case__meta mono"><span>03</span><span>Client · Christian Wolf</span></div>
+          <h3 class="case__title"><a class="case__link" href="work/the-circle.html">The Circle</a></h3>
+          <p class="case__desc">An industrial hall, a circle of people, 10 cameras rolling at once. A discussion format for Christian Wolf.</p>
         </article>
 
         <article class="case" data-cursor="View case">
-          <div class="case__media">
-            <video src="assets/work/wolf/wolf-wagenknecht-bts.mp4" poster="assets/work/wolf/wolf-wagenknecht-poster.jpg" muted loop playsinline preload="none" aria-label="Behind the scenes — Christian Wolf and Sahra Wagenknecht"></video>
+          <div class="case__media case__media--slides case__media--slides4">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/wolf/r/totale-1400.jpg" data-srcset="assets/work/wolf/r/totale-800.webp 800w, assets/work/wolf/r/totale-1400.webp 1400w, assets/work/wolf/r/totale-2000.webp 2000w, assets/work/wolf/r/totale-2379.webp 2379w" sizes="(max-width: 860px) 182vw, 76vw" alt="Christian Wolf and Sahra Wagenknecht at the table on the white set" style="object-position:30% 50%">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/wolf/r/wolf-1382.jpg" data-srcset="assets/work/wolf/r/wolf-800.webp 800w, assets/work/wolf/r/wolf-1382.webp 1382w" sizes="(max-width: 860px) 82vw, 34vw" alt="Christian Wolf at the microphone" style="object-position:50% 30%">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/wolf/r/sw-1400.jpg" data-srcset="assets/work/wolf/r/sw-800.webp 800w, assets/work/wolf/r/sw-1400.webp 1400w, assets/work/wolf/r/sw-1555.webp 1555w" sizes="(max-width: 860px) 82vw, 34vw" alt="Sahra Wagenknecht at the table" style="object-position:50% 30%">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/wolf/r/totale-1400.jpg" data-srcset="assets/work/wolf/r/totale-800.webp 800w, assets/work/wolf/r/totale-1400.webp 1400w, assets/work/wolf/r/totale-2000.webp 2000w, assets/work/wolf/r/totale-2379.webp 2379w" sizes="(max-width: 860px) 182vw, 76vw" alt="Wide shot of the white studio set with table and microphones" style="object-position:70% 50%">
             <span class="case__chip mono">STUDIO · MULTI-CAM</span>
           </div>
           <div class="case__meta mono"><span>04</span><span>Client · Christian Wolf</span></div>
@@ -261,11 +285,11 @@
 
         <article class="case" data-cursor="View case">
           <div class="case__media case__media--slides">
-            <img src="assets/work/clipster/workshop.jpg" alt="Clipster workshop session in Belgrade">
-            <img src="assets/work/clipster/speaker.jpg" alt="Speaker presenting at Clipster OFFSIDE" style="object-position:62% 50%">
-            <img src="assets/work/clipster/belgrade-rooftop.jpg" alt="Rooftop dinner with view of the Church of Saint Sava, Belgrade">
-            <img src="assets/work/clipster/team.jpg" alt="Clipster OFFSIDE team photo on the rooftop">
-            <img src="assets/work/clipster/dinner.jpg" alt="Clipster team dinner at sunset" style="object-position:58% 50%">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/clipster/r/workshop-1400.jpg" data-srcset="assets/work/clipster/r/workshop-800.webp 800w, assets/work/clipster/r/workshop-1400.webp 1400w, assets/work/clipster/r/workshop-2000.webp 2000w, assets/work/clipster/r/workshop-2800.webp 2800w" sizes="(max-width: 860px) 153vw, 64vw" alt="Clipster workshop session in Belgrade">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/clipster/r/speaker-1400.jpg" data-srcset="assets/work/clipster/r/speaker-800.webp 800w, assets/work/clipster/r/speaker-1400.webp 1400w, assets/work/clipster/r/speaker-2000.webp 2000w, assets/work/clipster/r/speaker-2800.webp 2800w" sizes="(max-width: 860px) 153vw, 64vw" alt="Speaker presenting at Clipster OFFSIDE" style="object-position:62% 50%">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/clipster/r/belgrade-rooftop-1400.jpg" data-srcset="assets/work/clipster/r/belgrade-rooftop-800.webp 800w, assets/work/clipster/r/belgrade-rooftop-1400.webp 1400w, assets/work/clipster/r/belgrade-rooftop-2000.webp 2000w, assets/work/clipster/r/belgrade-rooftop-2307.webp 2307w" sizes="(max-width: 860px) 82vw, 34vw" alt="Rooftop dinner with view of the Church of Saint Sava, Belgrade">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/clipster/r/team-1400.jpg" data-srcset="assets/work/clipster/r/team-800.webp 800w, assets/work/clipster/r/team-1400.webp 1400w, assets/work/clipster/r/team-2000.webp 2000w, assets/work/clipster/r/team-2734.webp 2734w" sizes="(max-width: 860px) 82vw, 34vw" alt="Clipster OFFSIDE team photo on the rooftop">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/clipster/r/dinner-1400.jpg" data-srcset="assets/work/clipster/r/dinner-800.webp 800w, assets/work/clipster/r/dinner-1400.webp 1400w, assets/work/clipster/r/dinner-2000.webp 2000w, assets/work/clipster/r/dinner-2800.webp 2800w" sizes="(max-width: 860px) 153vw, 64vw" alt="Clipster team dinner at sunset" style="object-position:58% 50%">
             <span class="case__chip mono">BELGRADE, RS</span>
           </div>
           <div class="case__meta mono"><span>05</span><span>Client · Clipster</span></div>
@@ -273,24 +297,28 @@
           <p class="case__desc">On-site event production and behind-the-scenes content for our client Clipster at their OFFSIDE event in Belgrade, Serbia.</p>
         </article>
 
-        <article class="case">
-          <div class="case__media case__media--chart">
-            <svg viewBox="0 0 300 160" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,150 40,146 80,140 110,136 140,128 160,120 175,70 190,40 210,48 240,36 270,22 300,10"/></svg>
-            <span class="big">+17,766</span>
+        <article class="case" data-cursor="View case">
+          <div class="case__media case__media--slides">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/break-out/r/still-2-1400.jpg" data-srcset="assets/work/break-out/r/still-2-800.webp 800w, assets/work/break-out/r/still-2-1400.webp 1400w, assets/work/break-out/r/still-2-2000.webp 2000w, assets/work/break-out/r/still-2-2800.webp 2800w" sizes="(max-width: 860px) 182vw, 76vw" alt="Panel member in a light-blue jumper making a point at the table" style="object-position:55% 50%">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/break-out/r/still-5-1400.jpg" data-srcset="assets/work/break-out/r/still-5-800.webp 800w, assets/work/break-out/r/still-5-1400.webp 1400w, assets/work/break-out/r/still-5-2000.webp 2000w, assets/work/break-out/r/still-5-2800.webp 2800w" sizes="(max-width: 860px) 182vw, 76vw" alt="Panel member in a black jacket responding, a red flag raised behind" style="object-position:58% 50%">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/break-out/r/still-1-1400.jpg" data-srcset="assets/work/break-out/r/still-1-800.webp 800w, assets/work/break-out/r/still-1-1400.webp 1400w, assets/work/break-out/r/still-1-2000.webp 2000w, assets/work/break-out/r/still-1-2800.webp 2800w" sizes="(max-width: 860px) 182vw, 76vw" alt="Panel member with tinted glasses answering at the table, a red flag in hand" style="object-position:35% 50%">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/break-out/r/still-4-1400.jpg" data-srcset="assets/work/break-out/r/still-4-800.webp 800w, assets/work/break-out/r/still-4-1400.webp 1400w, assets/work/break-out/r/still-4-2000.webp 2000w, assets/work/break-out/r/still-4-2800.webp 2800w" sizes="(max-width: 860px) 182vw, 76vw" alt="Panel member in a pink wig and cap during the discussion" style="object-position:62% 50%">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" loading="lazy" decoding="async" data-src="assets/work/break-out/r/still-3-1400.jpg" data-srcset="assets/work/break-out/r/still-3-800.webp 800w, assets/work/break-out/r/still-3-1400.webp 1400w, assets/work/break-out/r/still-3-2000.webp 2000w, assets/work/break-out/r/still-3-2800.webp 2800w" sizes="(max-width: 860px) 182vw, 76vw" alt="Panel member in black listening as the next thesis comes up on screen" style="object-position:35% 50%">
+            <span class="big">1.2M</span>
           </div>
-          <div class="case__meta mono"><span>06</span><span>YouTube growth</span></div>
-          <h3 class="case__title">The Break-Out</h3>
-          <p class="case__desc">One break-out video, then a system around it: test, adapt, cut what doesn't work. 1M views in 14 days, +17,766 subscribers.</p>
+          <div class="case__meta mono"><span>06</span><span>Client · Christian Wolf</span></div>
+          <h3 class="case__title"><a class="case__link" href="work/the-break-out.html">The Break-Out</a></h3>
+          <p class="case__desc">One break-out video, then a system around it: test, adapt, cut what doesn't work. 1.2M views, 375.9K hours watched, +6K subscribers (since published, as of 16 November 2026).</p>
         </article>
 
-        <article class="case">
-          <div class="case__media case__media--run">
-            <div class="lanes"><span></span><span></span><span></span><span></span></div>
-            <span class="big">25 YRS</span>
+        <article class="case" data-cursor="View case">
+          <div class="case__media">
+            <video data-src="assets/work/business-run/br-loop-tile.mp4" data-src-sm="assets/work/business-run/br-loop-sm.mp4" data-poster="assets/work/business-run/br-tile-poster.jpg" muted loop playsinline preload="none" aria-label="Wien Energie Business Run — the start block from above"></video>
+            <span class="case__chip mono">VIENNA · 25 EDITIONS</span>
           </div>
           <div class="case__meta mono"><span>07</span><span>Event content</span></div>
-          <h3 class="case__title">Business Run</h3>
-          <p class="case__desc">Celebrating 25 years of Europe's biggest corporate run — content that moves as fast as the field.</p>
+          <h3 class="case__title"><a class="case__link" href="work/business-run.html">Business Run</a></h3>
+          <p class="case__desc">25 editions, 32,160 registered runners in 2025 — content from the start blocks to the kick-off of the 25th edition.</p>
         </article>
       </div>
     </section>
@@ -304,7 +332,7 @@
             <h2 class="h2 reveal">See how we work<br><span class="muted">before you book us.</span></h2>
           </div>
           <div class="bts__aside reveal">
-            <p class="lead">Unfiltered vlogs from our sets in Vienna, Dubai and New York — the crews, the setups, the things that went wrong and how we fixed them.</p>
+            <p class="lead">Vlogs from our sets — the crews, the setups, the things that went wrong and how we fixed them. The first episodes are in the edit.</p>
             <a class="btn btn--ghost" href="https://www.youtube.com/@FerdiPlatz?sub_confirmation=1" target="_blank" rel="noopener">Subscribe on YouTube <span class="arrow">↗</span></a>
           </div>
         </div>
@@ -313,38 +341,38 @@
              Default source = latest uploads of the channel (playlist UU… = channel uploads).
              To feature one specific vlog, set data-yt-video="VIDEO_ID" on .bts__player. -->
         <div class="bts__player reveal" data-yt-list="UURLLHvwsmX6XRGHHPU7YGAg" data-cursor="Play">
-          <div class="bts__poster" aria-hidden="true">
-            <div class="bts__glow"></div>
-            <div class="bts__grid"></div>
-          </div>
+          <div class="bts__poster" aria-hidden="true"><picture><source type="image/avif" srcset="assets/bts/r/bts-poster-800.avif 800w, assets/bts/r/bts-poster-1400.avif 1400w, assets/bts/r/bts-poster-2000.avif 2000w, assets/bts/r/bts-poster-2800.avif 2800w" sizes="(max-width: 860px) 92vw, 1360px"><source type="image/webp" srcset="assets/bts/r/bts-poster-800.webp 800w, assets/bts/r/bts-poster-1400.webp 1400w, assets/bts/r/bts-poster-2000.webp 2000w, assets/bts/r/bts-poster-2800.webp 2800w" sizes="(max-width: 860px) 92vw, 1360px"><img src="assets/bts/r/bts-poster-1400.jpg" srcset="assets/bts/r/bts-poster-800.jpg 800w, assets/bts/r/bts-poster-1400.jpg 1400w, assets/bts/r/bts-poster-2000.jpg 2000w, assets/bts/r/bts-poster-2800.jpg 2800w" sizes="(max-width: 860px) 92vw, 1360px" width="2800" height="1575" alt="" decoding="async" loading="lazy"></picture><video data-src="assets/bts/bts-loop.mp4" data-src-sm="assets/bts/bts-loop-sm.mp4" muted loop playsinline preload="none"></video><div class="bts__shade"></div></div>
           <div class="bts__top mono"><span><span class="rec-dot"></span>PLACEMedia · BTS</span><span>Ferdinand Platz on YouTube</span></div>
-          <button class="bts__play" type="button" aria-label="Play latest behind-the-scenes vlog">
+          <button class="bts__play" type="button" aria-label="Play the latest upload from Ferdinand Platz on YouTube">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
           </button>
           <div class="bts__bottom">
-            <p class="bts__title">Latest vlog</p>
-            <p class="mono small">Click to load YouTube · Plays the newest upload from the channel</p>
+            <p class="bts__title">Latest upload</p>
+            <p class="mono small">Click to load YouTube · Plays the latest upload from Ferdinand's channel</p>
           </div>
         </div>
 
         <!-- Episodes: add data-yt-video="VIDEO_ID" to an episode once it's live — it becomes clickable and plays in the player above. -->
         <ul class="bts__eps">
           <li class="ep reveal">
+            <div class="ep__img"><picture><source type="image/avif" srcset="assets/work/trading/r/crew-800.avif 800w, assets/work/trading/r/crew-1400.avif 1400w, assets/work/trading/r/crew-2000.avif 2000w, assets/work/trading/r/crew-2800.avif 2800w" sizes="(max-width: 1080px) 92vw, 30vw"><source type="image/webp" srcset="assets/work/trading/r/crew-800.webp 800w, assets/work/trading/r/crew-1400.webp 1400w, assets/work/trading/r/crew-2000.webp 2000w, assets/work/trading/r/crew-2800.webp 2800w" sizes="(max-width: 1080px) 92vw, 30vw"><img src="assets/work/trading/r/crew-1400.jpg" srcset="assets/work/trading/r/crew-800.jpg 800w, assets/work/trading/r/crew-1400.jpg 1400w, assets/work/trading/r/crew-2000.jpg 2000w, assets/work/trading/r/crew-2800.jpg 2800w" sizes="(max-width: 1080px) 92vw, 30vw" width="2800" height="2100" alt="Crew briefing in silhouette in front of the LED wall at the Live Trading Showdown" decoding="async" loading="lazy"></picture></div>
             <span class="ep__no mono">EP 01</span>
             <h3 class="ep__title">12 cameras in 120 hours</h3>
             <p class="ep__desc">Behind the Live Trading Showdown — LED walls, heart-rate dashboard, a crew of nine.</p>
             <span class="ep__status mono">In the edit</span>
           </li>
           <li class="ep reveal">
+            <div class="ep__img"><picture><source type="image/avif" srcset="assets/work/circle/r/camera-800.avif 800w, assets/work/circle/r/camera-1400.avif 1400w, assets/work/circle/r/camera-2000.avif 2000w, assets/work/circle/r/camera-2800.avif 2800w" sizes="(max-width: 1080px) 92vw, 30vw"><source type="image/webp" srcset="assets/work/circle/r/camera-800.webp 800w, assets/work/circle/r/camera-1400.webp 1400w, assets/work/circle/r/camera-2000.webp 2000w, assets/work/circle/r/camera-2800.webp 2800w" sizes="(max-width: 1080px) 92vw, 30vw"><img src="assets/work/circle/r/camera-1400.jpg" srcset="assets/work/circle/r/camera-800.jpg 800w, assets/work/circle/r/camera-1400.jpg 1400w, assets/work/circle/r/camera-2000.jpg 2000w, assets/work/circle/r/camera-2800.jpg 2800w" sizes="(max-width: 1080px) 92vw, 30vw" width="2800" height="1575" alt="Camera operator framing the circle in the hall" decoding="async" loading="lazy"></picture></div>
             <span class="ep__no mono">EP 02</span>
             <h3 class="ep__title">Building The Circle</h3>
-            <p class="ep__desc">An industrial hall, ten cameras and a format the DACH market hadn't seen.</p>
+            <p class="ep__desc">An industrial hall, a circle of chairs and a multi-cam setup.</p>
             <span class="ep__status mono">In the edit</span>
           </li>
           <li class="ep reveal">
+            <div class="ep__img"><picture><source type="image/avif" srcset="assets/work/clipster/r/speaker-800.avif 800w, assets/work/clipster/r/speaker-1400.avif 1400w, assets/work/clipster/r/speaker-2000.avif 2000w, assets/work/clipster/r/speaker-2800.avif 2800w" sizes="(max-width: 1080px) 92vw, 30vw"><source type="image/webp" srcset="assets/work/clipster/r/speaker-800.webp 800w, assets/work/clipster/r/speaker-1400.webp 1400w, assets/work/clipster/r/speaker-2000.webp 2000w, assets/work/clipster/r/speaker-2800.webp 2800w" sizes="(max-width: 1080px) 92vw, 30vw"><img src="assets/work/clipster/r/speaker-1400.jpg" srcset="assets/work/clipster/r/speaker-800.jpg 800w, assets/work/clipster/r/speaker-1400.jpg 1400w, assets/work/clipster/r/speaker-2000.jpg 2000w, assets/work/clipster/r/speaker-2800.jpg 2800w" sizes="(max-width: 1080px) 92vw, 30vw" width="2800" height="1871" alt="Workshop session at the Clipster offsite in Belgrade" decoding="async" loading="lazy"></picture></div>
             <span class="ep__no mono">EP 03</span>
-            <h3 class="ep__title">A week on set in Dubai</h3>
-            <p class="ep__desc">Five projects in parallel, one Airbnb downtown and the workflow behind it.</p>
+            <h3 class="ep__title">Three days in Belgrade</h3>
+            <p class="ep__desc">Clipster's team offsite — workshops, the city and the evenings, covered on site.</p>
             <span class="ep__status mono">In the edit</span>
           </li>
         </ul>
@@ -454,10 +482,10 @@
       <p class="cta__sub reveal">Got a brand, a format or a story that deserves more than a scroll? Tell us about it. We reply within 24 hours — from whichever time zone we're in.</p>
       <!-- data-endpoint: paste the Google Apps Script web app URL (see automation/SETUP.md). Empty = falls back to the visitor's mail app. -->
       <form class="inq reveal" data-inq data-endpoint="https://script.google.com/macros/s/AKfycbyDlTe4BbjgpSX3T3to8Fl71KbxzIA9HpiKLd6HhmjHBwih92bjzdlzkLKgmTsQt0iYYg/exec" novalidate>
-        <label>Name<input name="name" autocomplete="name" required></label>
+        <label>Name<input type="text" name="name" autocomplete="name" required></label>
         <label>Email<input name="email" type="email" autocomplete="email" inputmode="email" required></label>
-        <label>Company<input name="company" autocomplete="organization"></label>
-        <label class="inq__hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+        <label>Company<input type="text" name="company" autocomplete="organization"></label>
+        <label class="inq__hp" aria-hidden="true">Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
         <label>What do you need?
           <select name="type">
             <option>Production — shoot, show or event</option>
@@ -477,10 +505,10 @@
             <option>Ongoing / retainer</option>
           </select>
         </label>
-        <label>Timing<input name="timing" placeholder="e.g. shoot in March, launch in Q2"></label>
+        <label>Timing<input type="text" name="timing" placeholder="e.g. shoot in March, launch in Q2"></label>
         <label class="full">Tell us about it<textarea name="msg" required placeholder="The brand, the idea, where it should run."></textarea></label>
         <div class="inq__foot">
-          <p class="inq__alt mono">Confirmation by email · Or write <a href="mailto:office@placemedia.at">office@placemedia.at</a> · <a href="tel:+4369919811600">+43 699 198 116 00</a> · <a href="https://www.linkedin.com/in/ferdinand-platz-89562a264/" target="_blank" rel="noopener">LinkedIn</a></p>
+          <p class="inq__alt mono">Confirmation by email · Or write <a href="mailto:office@placemedia.at">office@placemedia.at</a> · <a href="tel:+4369919811600">+43&nbsp;699&nbsp;198&nbsp;116&nbsp;00</a> · <a href="https://www.linkedin.com/in/ferdinand-platz-89562a264/" target="_blank" rel="noopener">LinkedIn</a></p>
           <button class="btn btn--light btn--big" type="submit" data-cursor="Send">Send inquiry <span class="arrow">↗</span></button>
         </div>
         <p class="inq__err full mono" role="alert" hidden></p>
@@ -497,12 +525,12 @@
   <footer class="footer">
     <div class="footer__row container mono">
       <div><p class="muted">Studio</p><p>Vienna, Austria<br>Dubai, UAE<br>New York, USA</p></div>
-      <div><p class="muted">Contact</p><p><a href="mailto:office@placemedia.at">office@placemedia.at</a><br><a href="tel:+4369919811600">+43 699 198 116 00</a></p></div>
+      <div><p class="muted">Contact</p><p><a href="mailto:office@placemedia.at">office@placemedia.at</a><br><a href="tel:+4369919811600">+43&nbsp;699&nbsp;198&nbsp;116&nbsp;00</a></p></div>
       <div><p class="muted">Social</p><p><a href="https://www.instagram.com/place_media/" target="_blank" rel="noopener">Instagram</a><br><a href="https://www.linkedin.com/in/ferdinand-platz-89562a264/" target="_blank" rel="noopener">LinkedIn</a></p></div>
       <div><p class="muted">Legal</p><p><a href="imprint.html">Imprint</a><br><a href="privacy.html">Privacy</a></p></div>
     </div>
     <div class="footer__word" aria-hidden="true">placemedia<sup>®</sup></div>
-    <div class="footer__base container mono"><span>© 2026 PLACEMedia</span><span>visuals with intent.</span><a href="#top">Back to top ↑</a></div>
+    <div class="footer__base container mono"><span>© 2026 PLACEMedia</span><span>visuals with intent.</span><a href="#top">Back to top ↑</a><a class="lang-switch mono" href="de/index.html" hreflang="de" lang="de" aria-label="DE – Deutsch" data-i18n>DE</a></div>
   </footer>
 
   <script src="main.js"></script>

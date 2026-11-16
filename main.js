@@ -76,7 +76,9 @@
     menu.classList.toggle('is-open', open);
     burger.setAttribute('aria-expanded', String(open));
     menu.setAttribute('aria-hidden', String(!open));
+    menu.inert = !open;            // geschlossen: Links nicht fokussierbar
   };
+  menu.inert = true;
   burger.addEventListener('click', () => toggleMenu(!menu.classList.contains('is-open')));
   $$('a', menu).forEach((a) => a.addEventListener('click', () => toggleMenu(false)));
 
@@ -85,7 +87,12 @@
     const cur = $('.cursor');
     const label = $('.cursor__label');
     let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y;
-    addEventListener('mousemove', (e) => { x = e.clientX; y = e.clientY; });
+    // erst nach der ersten Mausbewegung zeigen (sonst steht ein Punkt in der Bildschirmmitte)
+    addEventListener('mousemove', (e) => {
+      x = e.clientX; y = e.clientY;
+      if (!cur.classList.contains('is-on')) { cx = x; cy = y; cur.classList.add('is-on'); }
+    });
+    document.documentElement.addEventListener('mouseleave', () => cur.classList.remove('is-on'));
     const loop = () => {
       cx += (x - cx) * 0.2; cy += (y - cy) * 0.2;
       cur.style.transform = `translate(${cx}px, ${cy}px)`;
@@ -216,7 +223,7 @@
   const embed = (src) => {
     const f = document.createElement('iframe');
     f.src = src;
-    f.title = 'PLACEMedia — behind the scenes';
+    f.title = document.documentElement.lang.startsWith('de') ? 'PLACEMedia – hinter den Kulissen' : 'PLACEMedia — behind the scenes';
     f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
     f.allowFullscreen = true;
     f.referrerPolicy = 'strict-origin-when-cross-origin';
@@ -233,7 +240,7 @@
   // episodes with data-yt-video become clickable and play in the main player
   document.querySelectorAll('.ep[data-yt-video]').forEach((ep) => {
     ep.classList.add('is-live');
-    const st = ep.querySelector('.ep__status'); if (st) st.textContent = 'Watch ↗';
+    const st = ep.querySelector('.ep__status'); if (st) st.textContent = document.documentElement.lang.startsWith('de') ? 'Ansehen ↗' : 'Watch ↗';
     ep.addEventListener('click', () => {
       embed(srcFor(ep.dataset.ytVideo));
       player.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -241,21 +248,32 @@
   });
 })();
 
-/* ---------- case videos: play only while visible ---------- */
+/* ---------- tile + BTS videos: load (small variant on mobile / Save-Data) and play only while visible ---------- */
 (() => {
-  const vids = document.querySelectorAll('.case__media video');
+  const vids = document.querySelectorAll('.case__media video, .bts__poster video');
   if (!vids.length) return;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const saveData = !!(navigator.connection && navigator.connection.saveData);
+  const small = matchMedia('(max-width: 860px)').matches || saveData;
+  // Poster und Slideshow-Bilder der Kacheln erst laden, wenn die Kachel in die Nähe kommt
+  const near = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+    el.querySelectorAll('video[data-poster]').forEach((v) => { v.poster = v.dataset.poster; v.removeAttribute('data-poster'); });
+    el.querySelectorAll('img[data-src]').forEach((i) => { if (i.dataset.srcset) i.srcset = i.dataset.srcset; i.src = i.dataset.src; i.removeAttribute('data-src'); i.removeAttribute('data-srcset'); });
+    near.unobserve(el);
+  }), { rootMargin: '300px 600px 300px 600px' });
+  document.querySelectorAll('.case__media').forEach((m) => near.observe(m));
+  if (reduced) return;                       // Poster bleiben stehen
   const io = new IntersectionObserver((es) => es.forEach((e) => {
     const v = e.target; v.muted = true;
-    if (e.isIntersecting) v.play().catch(() => {}); else v.pause();
-  }), { threshold: 0.25 });
+    if (e.isIntersecting) {
+      if (!v.src && v.dataset.src) v.src = (small && v.dataset.srcSm) || v.dataset.src;
+      v.play().catch(() => {});
+    } else if (v.src) v.pause();
+  }), { threshold: 0.25, rootMargin: '0px 200px 0px 200px' });
   vids.forEach((v) => io.observe(v));
-})();
-
-/* ---------- BTS: compact until the first vlog is set ---------- */
-(() => {
-  const bts = document.querySelector('.bts');
-  if (bts && !bts.querySelector('[data-yt-video]')) bts.classList.add('bts--soon');
+  document.addEventListener('visibilitychange', () => vids.forEach((v) => { if (document.hidden && v.src) v.pause(); }));
 })();
 
 /* ---------- inquiry form → Google Sheet + confirmation mail (Apps Script), mail-app fallback ---------- */
@@ -268,10 +286,23 @@
   const btn = f.querySelector('button[type="submit"]');
   const done = document.querySelector('.inq-done');
   const okMail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+  // Texte je nach Seitensprache (<html lang="de"> auf /de/)
+  const DE = (document.documentElement.lang || '').toLowerCase().startsWith('de');
+  const T = DE ? {
+    subject: 'Neues Projekt', name: 'Name', email: 'E-Mail', company: 'Firma', need: 'Bedarf', budget: 'Budget', timing: 'Zeitplan',
+    sending: 'Wird gesendet …',
+    invalid: 'Diese E-Mail-Adresse sieht nicht richtig aus – bitte kurz prüfen.',
+    failed: (to) => `Da ist bei uns etwas schiefgelaufen. Schreib uns einfach an <a href="mailto:${to}">${to}</a> – wir antworten trotzdem innerhalb von 24 Stunden.`,
+  } : {
+    subject: 'New project', name: 'Name', email: 'Email', company: 'Company', need: 'Need', budget: 'Budget', timing: 'Timing',
+    sending: 'Sending…',
+    invalid: 'That email address doesn\'t look right — please check it.',
+    failed: (to) => `Something went wrong on our side. Please write to <a href="mailto:${to}">${to}</a> — we'll still reply within 24 hours.`,
+  };
 
   const mailFallback = (d) => {
-    const subject = `New project — ${d.company || d.name} (${String(d.type).split(' —')[0]})`;
-    const body = [`Name: ${d.name}`, `Email: ${d.email}`, `Company: ${d.company || '—'}`, `Need: ${d.type}`, `Budget: ${d.budget}`, `Timing: ${d.timing || '—'}`, '', d.msg].join('\n');
+    const subject = `${T.subject} — ${d.company || d.name} (${String(d.type).split(/ [—–]/)[0]})`;
+    const body = [`${T.name}: ${d.name}`, `${T.email}: ${d.email}`, `${T.company}: ${d.company || '—'}`, `${T.need}: ${d.type}`, `${T.budget}: ${d.budget}`, `${T.timing}: ${d.timing || '—'}`, '', d.msg].join('\n');
     location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
   const showError = (msg) => { err.hidden = false; err.innerHTML = msg; };
@@ -288,10 +319,10 @@
     if (bad.length) { f.querySelector(`[name="${bad[0]}"]`).focus(); return; }
     if (!endpoint) { mailFallback(d); return; }
 
-    btn.disabled = true; btn.dataset.label = btn.innerHTML; btn.innerHTML = 'Sending…';
+    btn.disabled = true; btn.dataset.label = btn.innerHTML; btn.innerHTML = T.sending;
     try {
       // text/plain body = "simple" request, no CORS preflight (Apps Script can't answer one)
-      const res = await fetch(endpoint, { method: 'POST', body: JSON.stringify({ ...d, source: location.href }) });
+      const res = await fetch(endpoint, { method: 'POST', body: JSON.stringify({ ...d, source: location.href, lang: DE ? 'de' : 'en' }) });
       const out = await res.json();
       if (!out.ok) throw new Error(out.error || 'failed');
       const n = done.querySelector('[data-inq-name]');
@@ -299,9 +330,7 @@
       f.hidden = true; done.hidden = false; done.focus();
     } catch (x) {
       btn.disabled = false; btn.innerHTML = btn.dataset.label;
-      showError(x.message === 'invalid_email'
-        ? 'That email address doesn\'t look right — please check it.'
-        : `Something went wrong on our side. Please write to <a href="mailto:${to}">${to}</a> — we'll still reply within 24 hours.`);
+      showError(x.message === 'invalid_email' ? T.invalid : T.failed(to));
     }
   });
 })();

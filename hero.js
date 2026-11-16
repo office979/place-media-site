@@ -17,7 +17,11 @@
   if (!fx$ || !fx$.getContext) return;
   const video = hero.querySelector('video.hero__video');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const saveData = !!(navigator.connection && navigator.connection.saveData);
+  const still = reduced || saveData;                 // statisches Standbild der Wand, kein Video-Download
+  const lowEnd = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
   const DPR = Math.min(devicePixelRatio || 1, 2);
+  let stillImg = null;                               // Standbild aus dem Showreel für den statischen Modus
 
   /* ---------- palette ---------- */
   const hex = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
@@ -51,10 +55,9 @@
   hero.addEventListener('pointerleave', () => { ptr.x = ptr.y = -9999; });
 
   let visible = true;
-  new IntersectionObserver(([e]) => {
-    visible = e.isIntersecting;
-    if (video) visible ? video.play().catch(() => {}) : video.pause();
-  }).observe(hero);
+  const syncVideo = () => { if (video && video.src) (visible && !document.hidden) ? video.play().catch(() => {}) : video.pause(); };
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; syncVideo(); }).observe(hero);
+  document.addEventListener('visibilitychange', syncVideo);
 
   /* ---------- headline geometry from the (invisible) h1 ---------- */
   const words = () => [...title.querySelectorAll('.word')].map((w) => {
@@ -135,12 +138,15 @@
     if (show.width !== cols || show.height !== rows) { show.width = cols; show.height = rows; }
     sx.globalCompositeOperation = 'source-over'; sx.globalAlpha = 1;
     sx.fillStyle = '#000'; sx.fillRect(0, 0, cols, rows);
-    if (video && video.readyState >= 2 && video.videoWidth) {
-      // cover-crop the video into the grid
-      const vr = video.videoWidth / video.videoHeight, gr = cols / rows;
-      let sw = video.videoWidth, sh = video.videoHeight, ox = 0, oy = 0;
-      if (vr > gr) { sw = sh * gr; ox = (video.videoWidth - sw) / 2; } else { sh = sw / gr; oy = (video.videoHeight - sh) / 2; }
-      sx.drawImage(video, ox, oy, sw, sh, 0, 0, cols, rows);
+    const srcEl = (video && video.readyState >= 2 && video.videoWidth) ? video
+      : (stillImg && stillImg.complete && stillImg.naturalWidth) ? stillImg : null;
+    if (srcEl) {
+      // cover-crop the video (or the still) into the grid
+      const iw = srcEl.videoWidth || srcEl.naturalWidth, ih = srcEl.videoHeight || srcEl.naturalHeight;
+      const vr = iw / ih, gr = cols / rows;
+      let sw = iw, sh = ih, ox = 0, oy = 0;
+      if (vr > gr) { sw = sh * gr; ox = (iw - sw) / 2; } else { sh = sw / gr; oy = (ih - sh) / 2; }
+      sx.drawImage(srcEl, ox, oy, sw, sh, 0, 0, cols, rows);
     } else {
       const idx = Math.floor(t / SCENE), local = t - idx * SCENE;
       sx.globalCompositeOperation = 'lighter';
@@ -165,7 +171,8 @@
     W = hero.clientWidth; H = hero.clientHeight;
     fx$.width = W * DPR; fx$.height = H * DPR;
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    step = W < 720 ? 5 : Math.max(7, Math.round(W / 190));
+    // Mobile: weniger Spalten (schwache Geräte noch weniger), damit ein Frame kurz bleibt
+    step = W < 720 ? (lowEnd ? 8 : 7) : Math.max(7, Math.round(W / 190));
     const src = headlineCanvas(W, H);
     const d = src.getContext('2d').getImageData(0, 0, src.width, src.height).data;
     cols = Math.ceil(W / step); rows = Math.ceil(H / step);
@@ -173,7 +180,10 @@
     for (let j = 0; j < rows; j++) {
       const y = j * step + step / 2;
       // fade the video towards the bottom so the intro copy + buttons stay readable
-      const vmask = y / H < 0.62 ? 1 : Math.max(0.18, 1 - (y / H - 0.62) / 0.38 * 0.82);
+      let vmask = y / H < 0.62 ? 1 : Math.max(0.18, 1 - (y / H - 0.62) / 0.38 * 0.82);
+      // ... und oben abdunkeln, damit Logo und Meta-Zeile lesbar bleiben (Mobile/Tablet stärker)
+      const topBand = W < 1080 ? 0.24 : 0.16;
+      if (y / H < topBand) vmask *= 0.28 + 0.72 * (y / H) / topBand;
       for (let i = 0; i < cols; i++) {
         const x = i * step + step / 2;
         let a = 0;
@@ -187,7 +197,7 @@
   }
 
   function frame(now) {
-    const t = reduced ? 3 : Math.max(0, (now - t0) / 1000);
+    const t = still ? 3 : Math.max(0, (now - t0) / 1000);
     const px = drawShow(cols, rows, t);
     ctx.clearRect(0, 0, W, H);
     const R = W < 720 ? 55 : Math.max(110, W * 0.11), R2 = R * R;
@@ -233,14 +243,46 @@
   }
 
   let rt;
-  addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(build, 120); });
-  const loop = (now) => { requestAnimationFrame(loop); if (visible && cells.length) frame(now); };
+  const drawStill = () => { if (cells.length) frame(performance.now()); };
+  addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { build(); if (still) drawStill(); }, 120); });
 
-  const fontsReady = document.fonts ? document.fonts.load('900 100px "Inter Tight"').catch(() => {}) : Promise.resolve();
-  fontsReady.then(() => {
-    hero.classList.add('hero--matrix');
-    requestAnimationFrame(build);
-    setTimeout(build, 1900);            // rebuild once the h1 intro has settled
+  // Frame-Rate drosseln: Mobile 24 fps, Desktop 60 fps; pausiert, wenn Hero unsichtbar oder Tab versteckt
+  let last = 0, running = false;
+  const loop = (now) => {
+    if (!visible || document.hidden) { running = false; return; }
     requestAnimationFrame(loop);
-  });
+    const minDt = W < 720 ? 1000 / 24 : 1000 / 60;
+    if (now - last < minDt - 1 || !cells.length) return;
+    last = now; frame(now);
+  };
+  const kick = () => { if (!running && !still && visible && !document.hidden) { running = true; requestAnimationFrame(loop); } };
+  new IntersectionObserver(([e]) => { if (e.isIntersecting) kick(); }).observe(hero);
+  document.addEventListener('visibilitychange', kick);
+
+  // Showreel erst nach dem Start der generierten Schleife laden (nie bei reduced motion / Save-Data)
+  const loadVideo = () => {
+    if (!video || still || video.src) return;
+    video.src = video.dataset.src; video.preload = 'auto';
+    video.addEventListener('canplay', syncVideo, { once: true });
+  };
+
+  const start = () => {
+    const fontsReady = document.fonts ? document.fonts.load('900 100px "Inter Tight"').catch(() => {}) : Promise.resolve();
+    fontsReady.then(() => {
+      hero.classList.add('hero--matrix');
+      build();
+      if (still) {
+        stillImg = new Image(); stillImg.onload = drawStill; stillImg.src = hero.dataset.still || (video && video.dataset.src ? video.dataset.src.replace(/\.mp4$/, '.jpg') : 'assets/showreel-led.jpg');
+        drawStill();
+      } else {
+        kick();
+        setTimeout(() => { build(); }, 1900);   // rebuild once the h1 intro has settled
+        setTimeout(loadVideo, 2500);
+      }
+    });
+  };
+  // erst nach dem ersten Paint und wenn der Main-Thread frei ist
+  const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 300));
+  const schedule = () => idle(start, { timeout: 1500 });
+  if (document.readyState === 'complete') schedule(); else addEventListener('load', schedule, { once: true });
 })();
