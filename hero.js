@@ -259,12 +259,20 @@
   new IntersectionObserver(([e]) => { if (e.isIntersecting) kick(); }).observe(hero);
   document.addEventListener('visibilitychange', kick);
 
-  // Showreel erst nach dem Start der generierten Schleife laden (nie bei reduced motion / Save-Data)
+  // Fetch the showreel immediately (during the loader). Generated scenes
+  // remain the fallback until video.readyState >= 2. Never load on reduced
+  // motion / Save-Data.
   const loadVideo = () => {
-    if (!video || still || video.src) return;
-    video.src = video.dataset.src; video.preload = 'auto';
-    video.addEventListener('canplay', syncVideo, { once: true });
+    if (!video || still) return;
+    if (!video.getAttribute('src') && video.dataset.src) {
+      video.src = video.dataset.src;
+    }
+    video.preload = 'auto';
+    const onReady = () => syncVideo();
+    if (video.readyState >= 2) onReady();
+    else video.addEventListener('canplay', onReady, { once: true });
   };
+  loadVideo();
 
   const start = () => {
     const fontsReady = document.fonts ? document.fonts.load('900 100px "Inter Tight"').catch(() => {}) : Promise.resolve();
@@ -277,7 +285,7 @@
       } else {
         kick();
         setTimeout(() => { build(); }, 1900);   // rebuild once the h1 intro has settled
-        setTimeout(loadVideo, 2500);
+        loadVideo(); // re-sync play() if canplay already fired
       }
     });
   };
